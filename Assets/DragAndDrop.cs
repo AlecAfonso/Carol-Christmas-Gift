@@ -2,24 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DragAndDrop : MonoBehaviour
 {
-    private RectTransform rectTransform;
-    private Canvas canvas;
-    private CanvasGroup canvasGroup;
 
-    private void Start() {
-        rectTransform = GetComponent<RectTransform>();
-        canvas = GetComponentInParent<Canvas>();
-        canvasGroup = GetComponent<CanvasGroup>();
+    private bool dragging = false;
+    private Vector3 offset;
+
+    private void Update() {
+        if (dragging) {
+            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + offset;
+        }
     }
 
-    public void OnDrag(PointerEventData eventData) {
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+    private void OnMouseDown() {
+        offset = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        dragging = true;
     }
 
-    public void OnEndDrag(PointerEventData eventData) {
-        // Implement logic for snap-to-location or checking if it's in the correct drop zone.
+    private void OnMouseUp() {
+        dragging = false;
     }
 }
